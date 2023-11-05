@@ -128,11 +128,13 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="framework.h" />
+    <ClInclude Include="qwin_gui.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="Win32_API_experiments.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="qwin_gui.c" />
     <ClCompile Include="Win32_API_experiments.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -140,6 +142,14 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\..\..\..\..\..\qp\qtools\qwin\Res\EK-LM3S811.bmp" />
+    <Image Include="..\..\..\..\downloads\bitmap10.bmp" />
+    <Image Include="..\..\..\..\downloads\bitmap11.bmp" />
+    <Image Include="..\..\..\..\downloads\bitmap3.bmp" />
+    <Image Include="..\..\..\..\downloads\bitmap4.bmp" />
+    <Image Include="..\..\..\..\downloads\bitmap5.bmp" />
+    <Image Include="..\..\..\..\downloads\bitmap7.bmp" />
+    <Image Include="..\..\..\..\downloads\bitmap8.bmp" />
+    <Image Include="..\..\..\..\downloads\bitmap9.bmp" />
     <Image Include="..\..\..\..\Downloads\SST1-H2S-24(1).bmp" />
     <Image Include="..\..\..\SST1-H2S-24(1).bmp" />
     <Image Include="..\..\..\SST1-H2S-24.bmp" />

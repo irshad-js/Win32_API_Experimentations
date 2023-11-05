@@ -1,15 +1,19 @@
 ﻿
 
+
 #include <windows.h>
 
 #include "resource.h" 
 
 #include "framework.h"
 #include "Win32_API_experiments.h"
+#include "qwin_gui.h"
 
 LRESULT CALLBACK AboutDlgProc(HWND hwnd, UINT Message, WPARAM wParam, LPARAM lParam);
 
 LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
+
+static HINSTANCE l_hInst;   /* this application instance */
 
 int WINAPI WinMain(
     _In_ HINSTANCE hInstance,
@@ -26,6 +30,8 @@ int WINAPI WinMain(
     wc.lpfnWndProc = WindowProc;
     wc.hInstance = hInstance;
     wc.lpszClassName = class_name;
+
+    l_hInst = hInstance;
 
     RegisterClass(&wc);
 
@@ -56,19 +62,59 @@ int WINAPI WinMain(
     return 0;
 }
 
+static SegmentDisplay   l_scoreBoard; /* segment display for the score */
+
+
+static int count = 0;
+static void update_seg(int n) {
+    /* update the score in the l_scoreBoard SegmentDisplay */
+    SegmentDisplay_setSegment(&l_scoreBoard, 0U, n++);
+    n /= 10U;
+    SegmentDisplay_setSegment(&l_scoreBoard, 1U, n++);
+    n /= 10U;
+}
 
 LRESULT CALLBACK AboutDlgProc(HWND hwnd, UINT Message, WPARAM wParam, LPARAM lParam)
 {
     switch (Message)
     {
-    case WM_INITDIALOG:
+    case WM_INITDIALOG: {
 
-        return TRUE;
+        SegmentDisplay_init(&l_scoreBoard,
+            2U,   /* 4 "segments" (digits 0-3) */
+            10U); /* 10 bitmaps (for 0-9 states) */
+        SegmentDisplay_initSegment(&l_scoreBoard, 0U, IDC_seg0);
+        SegmentDisplay_initSegment(&l_scoreBoard, 1U, IDC_seg1);
+        SegmentDisplay_initBitmap(&l_scoreBoard,
+            0U, LoadBitmap(l_hInst, MAKEINTRESOURCE(IDB_BITMAP1)));
+        SegmentDisplay_initBitmap(&l_scoreBoard,
+            1U, LoadBitmap(l_hInst, MAKEINTRESOURCE(IDB_BITMAP2)));
+        SegmentDisplay_initBitmap(&l_scoreBoard,
+            2U, LoadBitmap(l_hInst, MAKEINTRESOURCE(IDB_BITMAP3)));
+        SegmentDisplay_initBitmap(&l_scoreBoard,
+            3U, LoadBitmap(l_hInst, MAKEINTRESOURCE(IDB_BITMAP4)));
+        SegmentDisplay_initBitmap(&l_scoreBoard,
+            4U, LoadBitmap(l_hInst, MAKEINTRESOURCE(IDB_BITMAP5)));
+        SegmentDisplay_initBitmap(&l_scoreBoard,
+            5U, LoadBitmap(l_hInst, MAKEINTRESOURCE(IDB_BITMAP7)));
+        SegmentDisplay_initBitmap(&l_scoreBoard,
+            6U, LoadBitmap(l_hInst, MAKEINTRESOURCE(IDB_BITMAP8)));
+        SegmentDisplay_initBitmap(&l_scoreBoard,
+            7U, LoadBitmap(l_hInst, MAKEINTRESOURCE(IDB_BITMAP9)));
+        SegmentDisplay_initBitmap(&l_scoreBoard,
+            8U, LoadBitmap(l_hInst, MAKEINTRESOURCE(IDB_BITMAP10)));
+        SegmentDisplay_initBitmap(&l_scoreBoard,
+            9U, LoadBitmap(l_hInst, MAKEINTRESOURCE(IDB_BITMAP11)));
+
+        return 0;
+    }
     case WM_COMMAND:
         switch (LOWORD(wParam))
         {
         case IDOK:
-            EndDialog(hwnd, IDOK);
+            count++;
+            update_seg(count);
+            break;
             break;
         case IDCANCEL:
             EndDialog(hwnd, IDCANCEL);
@@ -79,9 +125,9 @@ LRESULT CALLBACK AboutDlgProc(HWND hwnd, UINT Message, WPARAM wParam, LPARAM lPa
     case WM_KEYDOWN: {
         switch (wParam) {
         case VK_SPACE:
+            count++;
+            update_seg(count);
             break;
-
-
         }
         return 0;
     }
@@ -92,28 +138,13 @@ LRESULT CALLBACK AboutDlgProc(HWND hwnd, UINT Message, WPARAM wParam, LPARAM lPa
     return TRUE;
 }
 
+
+
 LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
     switch (uMsg) {
-    case WM_INITDIALOG: 
-    {
-        int ret = DialogBoxA(GetModuleHandle(NULL),
-            (LPCSTR)MAKEINTRESOURCE(IDD_DIALOG1), hwnd, AboutDlgProc);
+        /* Perform initialization after all child windows have been created */
 
-        if (ret == IDOK) {
-            MessageBox(hwnd, L"Dialog exited with IDOK.", L"Notice",
-                MB_OK | MB_ICONINFORMATION);
-        }
-        else if (ret == IDCANCEL) {
-            MessageBox(hwnd, L"Dialog exited with IDCANCEL.", L"Notice",
-                MB_OK | MB_ICONINFORMATION);
-        }
-        else if (ret == -1) {
-            MessageBox(hwnd, L"Dialog failed!", L"Error",
-                MB_OK | MB_ICONINFORMATION);
-        }
-    }
-    break;
     case WM_DESTROY:
     {
         int ret = DialogBoxA(GetModuleHandle(NULL),
