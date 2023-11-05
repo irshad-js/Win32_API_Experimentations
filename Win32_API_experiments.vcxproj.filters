@@ -45,5 +45,29 @@
     <Image Include="Win32_API_experiments.ico">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="bitmap1.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="bitmap2.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\..\..\SST1-H2S-24.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\..\..\SST1-H2S-24.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="bitmap3.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\..\..\SST1-H2S-24(1).bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\..\..\..\..\..\qp\qtools\qwin\Res\EK-LM3S811.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\..\..\..\Downloads\SST1-H2S-24(1).bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
 </Project>

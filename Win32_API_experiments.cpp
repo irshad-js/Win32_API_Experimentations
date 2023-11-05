@@ -1,10 +1,13 @@
-#ifndef UNICODE
-#define UNICODE
-#endif 
+﻿
 
+#include <windows.h>
+
+#include "resource.h" 
 
 #include "framework.h"
 #include "Win32_API_experiments.h"
+
+LRESULT CALLBACK AboutDlgProc(HWND hwnd, UINT Message, WPARAM wParam, LPARAM lParam);
 
 LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
@@ -26,7 +29,7 @@ int WINAPI WinMain(
 
     RegisterClass(&wc);
 
-    HWND hwnd = CreateWindowEx(
+    HWND hwnd = CreateWindowExW(
         0,
         class_name,
         L"Learning project",
@@ -53,10 +56,82 @@ int WINAPI WinMain(
     return 0;
 }
 
+
+LRESULT CALLBACK AboutDlgProc(HWND hwnd, UINT Message, WPARAM wParam, LPARAM lParam)
+{
+    switch (Message)
+    {
+    case WM_INITDIALOG:
+
+        return TRUE;
+    case WM_COMMAND:
+        switch (LOWORD(wParam))
+        {
+        case IDOK:
+            EndDialog(hwnd, IDOK);
+            break;
+        case IDCANCEL:
+            EndDialog(hwnd, IDCANCEL);
+            break;
+        }
+        break;
+
+    case WM_KEYDOWN: {
+        switch (wParam) {
+        case VK_SPACE:
+            break;
+
+
+        }
+        return 0;
+    }
+
+    default:
+        return FALSE;
+    }
+    return TRUE;
+}
+
 LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
     switch (uMsg) {
+    case WM_INITDIALOG: 
+    {
+        int ret = DialogBoxA(GetModuleHandle(NULL),
+            (LPCSTR)MAKEINTRESOURCE(IDD_DIALOG1), hwnd, AboutDlgProc);
+
+        if (ret == IDOK) {
+            MessageBox(hwnd, L"Dialog exited with IDOK.", L"Notice",
+                MB_OK | MB_ICONINFORMATION);
+        }
+        else if (ret == IDCANCEL) {
+            MessageBox(hwnd, L"Dialog exited with IDCANCEL.", L"Notice",
+                MB_OK | MB_ICONINFORMATION);
+        }
+        else if (ret == -1) {
+            MessageBox(hwnd, L"Dialog failed!", L"Error",
+                MB_OK | MB_ICONINFORMATION);
+        }
+    }
+    break;
     case WM_DESTROY:
+    {
+        int ret = DialogBoxA(GetModuleHandle(NULL),
+            (LPCSTR)MAKEINTRESOURCE(IDD_DIALOG1), hwnd, AboutDlgProc);
+
+        if (ret == IDOK) {
+            MessageBox(hwnd, L"Dialog exited with IDOK.", L"Notice",
+                MB_OK | MB_ICONINFORMATION);
+        }
+        else if (ret == IDCANCEL) {
+            MessageBox(hwnd, L"Dialog exited with IDCANCEL.", L"Notice",
+                MB_OK | MB_ICONINFORMATION);
+        }
+        else if (ret == -1) {
+            MessageBox(hwnd, L"Dialog failed!", L"Error",
+                MB_OK | MB_ICONINFORMATION);
+        }
+    }
         PostQuitMessage(0);
         return 0;
     case WM_PAINT:
@@ -75,3 +150,4 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 
     return DefWindowProc(hwnd, uMsg, wParam, lParam);
 }
+

@@ -1,2 +1,4 @@
 ﻿  Win32_API_experiments.cpp
+C:\Users\jsirs\Desktop\Other_Temp\Win32_Experimentations\Win32_API_experiments\Win32_API_experiments.cpp(100,17): warning C4244: 'initializing': conversion from 'INT_PTR' to 'int', possible loss of data
+C:\Users\jsirs\Desktop\Other_Temp\Win32_Experimentations\Win32_API_experiments\Win32_API_experiments.cpp(119,17): warning C4244: 'initializing': conversion from 'INT_PTR' to 'int', possible loss of data
   Win32_API_experiments.vcxproj -> C:\Users\jsirs\Desktop\Other_Temp\Win32_Experimentations\Win32_API_experiments\x64\Debug\Win32_API_experiments.exe
