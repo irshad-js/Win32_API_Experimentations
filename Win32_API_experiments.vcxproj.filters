@@ -27,15 +27,9 @@
     <ClInclude Include="Win32_API_experiments.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="qwin_gui.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Win32_API_experiments.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="qwin_gui.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -51,22 +45,28 @@
     <Image Include="Win32_API_experiments.ico">
       <Filter>Resource Files</Filter>
     </Image>
-    <Image Include="bitmap1.bmp">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="bitmap2.bmp">
-      <Filter>Resource Files</Filter>
-    </Image>
     <Image Include="SST1.bmp">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="bmp00001.bmp">
       <Filter>Resource Files</Filter>
     </Image>
     <Image Include="SST1a.bmp">
       <Filter>Resource Files</Filter>
     </Image>
     <Image Include="sst1b.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="seg2.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="seg3.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="seg4.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="seg1.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="bitmap1.bmp">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>

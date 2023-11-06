@@ -1,1 +1,4 @@
-﻿  Win32_API_experiments.vcxproj -> C:\Users\jsirs\Desktop\Other_Temp\Win32_Experimentations\Win32_API_experiments\x64\Debug\Win32_API_experiments.exe
+﻿  Win32_API_experiments.cpp
+C:\Users\jsirs\Desktop\Other_Temp\Win32_Experimentations\Win32_API_experiments\Win32_API_experiments.cpp(25,12): warning C4244: 'return': conversion from 'INT_PTR' to 'int', possible loss of data
+C:\Users\jsirs\Desktop\Other_Temp\Win32_Experimentations\Win32_API_experiments\Win32_API_experiments.cpp(88,18): warning C4244: 'initializing': conversion from 'UINT_PTR' to 'UINT', possible loss of data
+  Win32_API_experiments.vcxproj -> C:\Users\jsirs\Desktop\Other_Temp\Win32_Experimentations\Win32_API_experiments\x64\Debug\Win32_API_experiments.exe

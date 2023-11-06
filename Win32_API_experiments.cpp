@@ -22,27 +22,26 @@ static LRESULT CALLBACK WndProc(HWND hWnd, UINT iMsg,
 int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrevInst,
     LPSTR cmdLine, int iCmdShow)
 {
-    l_hInst = hInst;
-    WNDCLASSEX wndclass;
-
-    wndclass.cbSize = sizeof(wndclass);
-    wndclass.style = CS_HREDRAW | CS_VREDRAW;
-    wndclass.lpfnWndProc = WndProc;
-    wndclass.cbClsExtra = 0;
-    wndclass.cbWndExtra = DLGWINDOWEXTRA;
-    wndclass.hInstance = hInst;
-    wndclass.hIcon = NULL;
-    wndclass.hCursor = LoadCursor(NULL, IDC_ARROW);
-    wndclass.hbrBackground = (HBRUSH)COLOR_WINDOW;
-    wndclass.lpszMenuName = NULL;
-    wndclass.lpszClassName = L"First";
-    wndclass.hIconSm = NULL;
-
-    RegisterClassEx(&wndclass);
-
     return DialogBox(hInst, MAKEINTRESOURCE(IDD_DIALOG1), NULL, WndProc);
 }
 
+const int ID_TIMER = 1;
+static int counter = 1111;
+
+HBITMAP hBitmap[4];
+
+static void update_lcd(HWND hWnd,int counter) {
+
+
+    SendMessage(GetDlgItem(hWnd, IDC_seg0), STM_SETIMAGE,
+        (WPARAM)IMAGE_BITMAP, (LPARAM)hBitmap[(counter/1000)%4]);
+    SendMessage(GetDlgItem(hWnd, IDC_seg1), STM_SETIMAGE,
+        (WPARAM)IMAGE_BITMAP, (LPARAM)hBitmap[(counter / 100) % 4]);
+    SendMessage(GetDlgItem(hWnd, IDC_seg2), STM_SETIMAGE,
+        (WPARAM)IMAGE_BITMAP, (LPARAM)hBitmap[(counter / 10) % 4]);
+    SendMessage(GetDlgItem(hWnd, IDC_seg3), STM_SETIMAGE,
+        (WPARAM)IMAGE_BITMAP, (LPARAM)hBitmap[(counter / 1) % 4] );
+}
 
 static LRESULT CALLBACK WndProc(HWND hWnd, UINT iMsg,
     WPARAM wParam, LPARAM lParam)
@@ -50,26 +49,24 @@ static LRESULT CALLBACK WndProc(HWND hWnd, UINT iMsg,
     switch (iMsg) {
 
     case WM_CREATE: {
-        l_hWnd = hWnd; /* save the window handle */
+        l_hWnd = hWnd;
 
-        /* initialize the owner-drawn buttons...
-        * NOTE: must be done *before* the first drawing of the buttons,
-        * so WM_INITDIALOG is too late.
-        */
         return 0;
     }
+    case WM_TIMER:
+    {
+        counter++;
+        update_lcd(hWnd,counter);
+    }
+    break;
+
     case WM_COMMAND: {
         switch (wParam) {
         case IDOK:
         {
 
             // HBITMAP hBitmap = (HBITMAP)::LoadImage(NULL, L"bitmap7.bmp", IMAGE_BITMAP,0, 0, LR_LOADFROMFILE | LR_DEFAULTSIZE);
-
-            HBITMAP hBitmap = LoadBitmap(GetModuleHandle(NULL), MAKEINTRESOURCE(IDB_SEG2x));
-            SendMessage(GetDlgItem(hWnd, IDC_seg0), STM_SETIMAGE,
-                (WPARAM)IMAGE_BITMAP, (LPARAM)hBitmap);
-            SendMessage(GetDlgItem(hWnd, IDC_seg1), STM_SETIMAGE,
-                (WPARAM)IMAGE_BITMAP, (LPARAM)hBitmap);
+            // HBITMAP hBitmap = LoadBitmap(GetModuleHandle(NULL), MAKEINTRESOURCE(IDB_SEG4));
 
         }
             break;
@@ -83,11 +80,19 @@ static LRESULT CALLBACK WndProc(HWND hWnd, UINT iMsg,
     }
                   /* Perform initialization after all child windows have been created */
     case WM_INITDIALOG: {
+        hBitmap[0] = LoadBitmap(GetModuleHandle(NULL), MAKEINTRESOURCE(IDB_SEG1));
+        hBitmap[1] = LoadBitmap(GetModuleHandle(NULL), MAKEINTRESOURCE(IDB_SEG2));
+        hBitmap[2] = LoadBitmap(GetModuleHandle(NULL), MAKEINTRESOURCE(IDB_SEG3));
+        hBitmap[3] = LoadBitmap(GetModuleHandle(NULL), MAKEINTRESOURCE(IDB_SEG4));
 
+        UINT ret = SetTimer(hWnd, ID_TIMER, 50, NULL);
+        if (ret == 0)
+            MessageBox(hWnd, L"Could not SetTimer()!", L"Error", MB_OK | MB_ICONEXCLAMATION);
         return 0;
     }
 
     case WM_DESTROY: {
+        KillTimer(hWnd, ID_TIMER);
         PostQuitMessage(0);
         return 0;
     }
