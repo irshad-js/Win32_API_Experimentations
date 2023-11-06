@@ -1,3 +1,6 @@
-#pragma once
+#ifndef WIN32_EXP_
+#define WIN32_EXP_
 
-#include "resource.h"
+void API_Update_Lcd(int counter);
+
+#endif

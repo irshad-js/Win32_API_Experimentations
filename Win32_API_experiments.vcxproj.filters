@@ -29,7 +29,7 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Win32_API_experiments.cpp">
+    <ClCompile Include="Win32_API_experiments.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -66,7 +66,22 @@
     <Image Include="seg1.bmp">
       <Filter>Resource Files</Filter>
     </Image>
-    <Image Include="bitmap1.bmp">
+    <Image Include="seg5.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="seg6.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="seg7.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="seg8.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="seg9.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="seg0.bmp">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>
