@@ -1,6 +1,8 @@
-﻿#include "framework.h"
+﻿#include <stdint.h>
+#include "framework.h"
 #include "resource.h"
-#include "Win32_API_experiments.h"
+#include "BSP.h"
+#include <mmsystem.h>
 
 // Both works well
 // HBITMAP hBitmap = (HBITMAP)::LoadImage(NULL, L"bitmap7.bmp", IMAGE_BITMAP,0, 0, LR_LOADFROMFILE | LR_DEFAULTSIZE);
@@ -9,9 +11,18 @@
 static LRESULT CALLBACK WndProc(HWND hWnd, UINT iMsg,
     WPARAM wParam, LPARAM lParam);
 
+static int last_lcd_display_value;
+
+enum {
+    NO_LED = 10,
+    LEFT_LED,
+    RIGHT_LED,
+    CENTER_LED
+};
+
 const int ID_TIMER = 1;
 static int counter = 0;
-HBITMAP hBitmap[11];
+HBITMAP hBitmap[14];
 static HWND local_hwnd_instance = NULL;
 
 int WINAPI WinMain(
@@ -22,18 +33,6 @@ int WINAPI WinMain(
 )
 {
     return DialogBox(hInstance, MAKEINTRESOURCE(IDD_DIALOG1), NULL, WndProc);
-}
-
-void API_Update_Lcd(int counter) {
-
-    SendMessage(GetDlgItem(local_hwnd_instance, IDC_seg0), STM_SETIMAGE,
-        (WPARAM)IMAGE_BITMAP, (LPARAM)hBitmap[((UINT)(counter/1000)%10)]);
-    SendMessage(GetDlgItem(local_hwnd_instance, IDC_seg1), STM_SETIMAGE,
-        (WPARAM)IMAGE_BITMAP, (LPARAM)hBitmap[((UINT)(counter / 100) % 10)]);
-    SendMessage(GetDlgItem(local_hwnd_instance, IDC_seg2), STM_SETIMAGE,
-        (WPARAM)IMAGE_BITMAP, (LPARAM)hBitmap[((UINT)(counter / 10) % 10)]);
-    SendMessage(GetDlgItem(local_hwnd_instance, IDC_seg3), STM_SETIMAGE,
-        (WPARAM)IMAGE_BITMAP, (LPARAM)hBitmap[((UINT)(counter / 1) % 10)] );
 }
 
 static void initialize_lcd(void) {
@@ -47,13 +46,27 @@ static void initialize_lcd(void) {
     hBitmap[7] = LoadBitmap(GetModuleHandle(NULL), MAKEINTRESOURCE(IDB_SEG7));
     hBitmap[8] = LoadBitmap(GetModuleHandle(NULL), MAKEINTRESOURCE(IDB_SEG8));
     hBitmap[9] = LoadBitmap(GetModuleHandle(NULL), MAKEINTRESOURCE(IDB_SEG9));
+
+    hBitmap[NO_LED] = LoadBitmap(GetModuleHandle(NULL), MAKEINTRESOURCE(IDB_SST1A));
+    hBitmap[LEFT_LED] = LoadBitmap(GetModuleHandle(NULL), MAKEINTRESOURCE(IDB_Left_LED));
+    hBitmap[RIGHT_LED] = LoadBitmap(GetModuleHandle(NULL), MAKEINTRESOURCE(IDB_Right_LED));
+    hBitmap[CENTER_LED] = LoadBitmap(GetModuleHandle(NULL), MAKEINTRESOURCE(IDB_Alive_LED));
 }
 
 static void initialize_timer(HWND hWnd) {
-    UINT ret = SetTimer(hWnd, ID_TIMER, 25, NULL);
+    UINT ret = SetTimer(hWnd, ID_TIMER, 250, NULL);
     if (ret == 0)
         MessageBox(hWnd, L"Could not SetTimer()!", L"Error", MB_OK | MB_ICONEXCLAMATION);
 }
+
+/*..........................................................................*/
+/* thread function for running the application main_gui() */
+static DWORD WINAPI appThread(LPVOID par) {
+    (void)par;         /* unused parameter */
+    return main_gui(); /* run the application */
+
+}
+
 
 static LRESULT CALLBACK WndProc(HWND hWnd, UINT iMsg,
     WPARAM wParam, LPARAM lParam)
@@ -64,7 +77,6 @@ static LRESULT CALLBACK WndProc(HWND hWnd, UINT iMsg,
     {
         counter++;
         if (counter == 9999)counter = 0;
-        API_Update_Lcd(counter);
     }
     break;
 
@@ -83,9 +95,11 @@ static LRESULT CALLBACK WndProc(HWND hWnd, UINT iMsg,
         return 0;
     }
     case WM_INITDIALOG: {
+
         local_hwnd_instance = hWnd;
-        initialize_lcd();
-        initialize_timer(local_hwnd_instance);
+        /* --> Spawn the application thread to run main_gui() */
+        CreateThread(NULL, 0, &appThread, NULL, 0, NULL);
+
         return 0;
     }
 
@@ -99,3 +113,57 @@ static LRESULT CALLBACK WndProc(HWND hWnd, UINT iMsg,
     return DefWindowProc(hWnd, iMsg, wParam, lParam);
 }
 
+//    PlaySound("C:\\Users\\jsirs\\Desktop\\Other_Temp\\Win32_API_experiments\\scoop.mp3", NULL, SND_SYNC);
+//    PlaySoundW(L"C:\\Users\\jsirs\\Desktop\\Other_Temp\\Win32_API_experiments\\scoop.mp3", NULL, SND_LOOP);
+//    PlaySound(TEXT("song"), GetModuleHandle(NULL), SND_RESOURCE | SND_LOOP | SND_ASYNC);
+
+
+void BSP_Set_TIMER(int milliseconds) {
+    initialize_timer(local_hwnd_instance);
+}
+/*..........................................................................*/
+void BSP_sleep(uint32_t ticks) {
+    Sleep(ticks);
+}
+
+void BSP_init(void) {
+    initialize_lcd();
+}
+
+void BSP_terminate(int result) {
+    //empty
+}
+
+void BSP_LED_Activity(int activity) {
+
+    if (activity == 0) {
+        SendMessage(GetDlgItem(local_hwnd_instance, IDC_sst1), STM_SETIMAGE,
+            (WPARAM)IMAGE_BITMAP, (LPARAM)hBitmap[NO_LED]);
+    }
+    else if (activity == 1) {
+        SendMessage(GetDlgItem(local_hwnd_instance, IDC_sst1), STM_SETIMAGE,
+            (WPARAM)IMAGE_BITMAP, (LPARAM)hBitmap[LEFT_LED]);
+    }
+    else if (activity == 2) {
+        SendMessage(GetDlgItem(local_hwnd_instance, IDC_sst1), STM_SETIMAGE,
+            (WPARAM)IMAGE_BITMAP, (LPARAM)hBitmap[RIGHT_LED]);
+    }
+    else if (activity == 3) {
+        SendMessage(GetDlgItem(local_hwnd_instance, IDC_sst1), STM_SETIMAGE,
+            (WPARAM)IMAGE_BITMAP, (LPARAM)hBitmap[CENTER_LED]);
+    }
+
+}
+
+void BSP_DisplayNumber(int count) {
+    SendMessage(GetDlgItem(local_hwnd_instance, IDC_seg0), STM_SETIMAGE,
+        (WPARAM)IMAGE_BITMAP, (LPARAM)hBitmap[((UINT)(count / 1000) % 10)]);
+    SendMessage(GetDlgItem(local_hwnd_instance, IDC_seg1), STM_SETIMAGE,
+        (WPARAM)IMAGE_BITMAP, (LPARAM)hBitmap[((UINT)(count / 100) % 10)]);
+    SendMessage(GetDlgItem(local_hwnd_instance, IDC_seg2), STM_SETIMAGE,
+        (WPARAM)IMAGE_BITMAP, (LPARAM)hBitmap[((UINT)(count / 10) % 10)]);
+    SendMessage(GetDlgItem(local_hwnd_instance, IDC_seg3), STM_SETIMAGE,
+        (WPARAM)IMAGE_BITMAP, (LPARAM)hBitmap[((UINT)(count / 1) % 10)]);
+
+    last_lcd_display_value = count;
+}

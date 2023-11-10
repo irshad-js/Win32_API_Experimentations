@@ -102,12 +102,13 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_WINDOWS;%(PreprocessorDefinitions);DUAL_TARGET</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>$(CoreLibraryDependencies);%(AdditionalDependencies);winmm.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -130,9 +131,10 @@
     <ClInclude Include="framework.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="targetver.h" />
-    <ClInclude Include="Win32_API_experiments.h" />
+    <ClInclude Include="BSP.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="main.c" />
     <ClCompile Include="Win32_API_experiments.c" />
   </ItemGroup>
   <ItemGroup>
@@ -151,9 +153,14 @@
     <Image Include="seg9.bmp" />
     <Image Include="small.ico" />
     <Image Include="SST1.bmp" />
-    <Image Include="SST1a.bmp" />
-    <Image Include="sst1b.bmp" />
+    <Image Include="sst1_alive_led.bmp" />
+    <Image Include="sst1_left_led.bmp" />
+    <Image Include="sst1_right_led.bmp" />
     <Image Include="Win32_API_experiments.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="song1.bin" />
+    <None Include="song2.bin" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

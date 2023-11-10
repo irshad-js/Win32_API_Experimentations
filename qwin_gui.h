@@ -41,7 +41,6 @@
 #ifndef QWIN_GUI_H_
 #define QWIN_GUI_H_
 
-#define QWIN_GUI
 
 #ifndef QWIN_GUI
     #error The pre-processor macro QWIN_GUI must be defined

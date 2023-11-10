@@ -24,12 +24,15 @@
     <ClInclude Include="Resource.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Win32_API_experiments.h">
+    <ClInclude Include="BSP.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Win32_API_experiments.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="main.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -46,12 +49,6 @@
       <Filter>Resource Files</Filter>
     </Image>
     <Image Include="SST1.bmp">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="SST1a.bmp">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="sst1b.bmp">
       <Filter>Resource Files</Filter>
     </Image>
     <Image Include="seg2.bmp">
@@ -84,5 +81,22 @@
     <Image Include="seg0.bmp">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="sst1_left_led.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="sst1_alive_led.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="sst1_right_led.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="song1.bin">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="song2.bin">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
 </Project>
