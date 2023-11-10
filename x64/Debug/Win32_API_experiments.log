@@ -1,6 +1,2 @@
 ﻿  main.c
-  Win32_API_experiments.c
-C:\Users\jsirs\Desktop\Other_Temp\Win32_API_experiments\Win32_API_experiments.c(35,12): warning C4244: 'return': conversion from 'INT_PTR' to 'int', possible loss of data
-C:\Users\jsirs\Desktop\Other_Temp\Win32_API_experiments\Win32_API_experiments.c(57,16): warning C4244: 'initializing': conversion from 'UINT_PTR' to 'UINT', possible loss of data
-  Generating Code...
   Win32_API_experiments.vcxproj -> C:\Users\jsirs\Desktop\Other_Temp\Win32_API_experiments\x64\Debug\Win32_API_experiments.exe

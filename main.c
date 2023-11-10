@@ -1,7 +1,7 @@
 #include <stdint.h>
 #include "BSP.h"
 
-static int lcd_counter = 0;
+static int lcd_counter = 1111;
 static int led_counter = 0;
 /*..........................................................................*/
 int main() {
