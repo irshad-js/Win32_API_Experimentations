@@ -1,3 +1,4 @@
+#if 0
 #include <stdint.h>
 #include "BSP.h"
 
@@ -20,3 +21,4 @@ int main() {
     //return 0;
 }
 
+#endif
