@@ -90,6 +90,9 @@
     <Image Include="sst1_right_led.bmp">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="sst4.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <None Include="song1.bin">

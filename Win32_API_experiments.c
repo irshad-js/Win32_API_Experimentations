@@ -1,4 +1,4 @@
-﻿#if 0
+﻿#if 1
 
 #include <stdint.h>
 #include "framework.h"
@@ -9,6 +9,9 @@
 // Both works well
 // HBITMAP hBitmap = (HBITMAP)::LoadImage(NULL, L"bitmap7.bmp", IMAGE_BITMAP,0, 0, LR_LOADFROMFILE | LR_DEFAULTSIZE);
 // HBITMAP hBitmap = LoadBitmap(GetModuleHandle(NULL), MAKEINTRESOURCE(IDB_SEG4));
+
+void DisplayTime(HDC hdc, BOOL f24Hour, BOOL fSuppress);
+void DisplayDigit(HDC hdc, int iNumber);
 
 static LRESULT CALLBACK WndProc(HWND hWnd, UINT iMsg,
     WPARAM wParam, LPARAM lParam);
@@ -73,34 +76,63 @@ static DWORD WINAPI appThread(LPVOID par) {
 static LRESULT CALLBACK WndProc(HWND hWnd, UINT iMsg,
     WPARAM wParam, LPARAM lParam)
 {
+    static BOOL f24Hour = 0;
+    static BOOL fSuppress =0;
+    static HBRUSH hBrushRed;
+    static int cxClient, cyClient;
+    HDC hdc;
+    PAINTSTRUCT ps;
+    TCHAR szBuffer[2];
+    RECT rc;
+    POINT aptStar[6] = { 50,2, 2,98, 98,33, 2,33, 98,98, 50,2 };
+
     switch (iMsg) {
 
     case WM_TIMER:
-    {
-        counter++;
-        if (counter == 9999)counter = 0;
-    }
-    break;
-
-    case WM_COMMAND: {
-        switch (wParam) {
-        case IDOK:
-        {
-            PostQuitMessage(0);
-            break;
-        }
-        case IDCANCEL: {
-            PostQuitMessage(0);
-            break;
-        }
-        }
+        InvalidateRect(hWnd, NULL, TRUE);
         return 0;
-    }
-    case WM_INITDIALOG: {
+    case WM_PAINT:
+        hdc = BeginPaint(hWnd, &ps);
 
+        int w = 100;
+        int h = 100;
+
+        //create memory device context
+        HDC memdc = CreateCompatibleDC(0);
+
+        //create bitmap
+        HBITMAP hbitmap = CreateCompatibleBitmap(memdc, 455, 455);
+
+        //select bitmap in to memory device context
+       SelectObject(memdc, hbitmap);
+
+        //begine drawing:
+        HPEN hpen = CreatePen(0, 4, 255);
+        SelectObject(memdc, hpen);
+        DisplayDigit(memdc, 5);
+
+        BitBlt(GetDC(hWnd), 0, 0, 455, 455, memdc, 0, 0, SRCCOPY);
+
+//        Rectangle(memdc, 10, 10, 90, 90);
+
+        DeleteObject(hbitmap);
+        DeleteObject(hpen);
+        DeleteDC(memdc);
+
+        EndPaint(hWnd, &ps);
+        return 0;
+
+    case WM_SIZE:
+        cxClient = LOWORD(lParam);
+        cyClient = HIWORD(lParam);
+        return 0;
+
+    case WM_INITDIALOG: {
+        hBrushRed = CreateSolidBrush(RGB(0, 0, 0));
         local_hwnd_instance = hWnd;
         /* --> Spawn the application thread to run main_gui() */
-        CreateThread(NULL, 0, &appThread, NULL, 0, NULL);
+        
+        //CreateThread(NULL, 0, &appThread, NULL, 0, NULL);
 
         return 0;
     }
@@ -108,6 +140,7 @@ static LRESULT CALLBACK WndProc(HWND hWnd, UINT iMsg,
     case WM_DESTROY: {
         KillTimer(local_hwnd_instance, ID_TIMER);
         PostQuitMessage(0);
+        DeleteObject(hBrushRed);
         return 0;
     }
 
@@ -172,46 +205,7 @@ void BSP_DisplayNumber(int count) {
 
 #endif
 
-#include <windows.h>
-#define ID_TIMER 1
-LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
-int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
-    PSTR szCmdLine, int iCmdShow)
-{
-    static TCHAR szAppName[] = TEXT("DigClock");
-    HWND hwnd;
-    MSG msg;
-    WNDCLASS wndclass;
-    wndclass.style = CS_HREDRAW | CS_VREDRAW;
-    wndclass.lpfnWndProc = WndProc;
-    wndclass.cbClsExtra = 0;
-    wndclass.cbWndExtra = 0;
-    wndclass.hInstance = hInstance;
-    wndclass.hIcon = LoadIcon(NULL, IDI_APPLICATION);
-    wndclass.hCursor = LoadCursor(NULL, IDC_ARROW);
-    wndclass.hbrBackground = (HBRUSH)GetStockObject(WHITE_BRUSH);
-    wndclass.lpszMenuName = NULL;
-    wndclass.lpszClassName = szAppName;
-    if (!RegisterClass(&wndclass))
-    {
-        MessageBox(NULL, TEXT("Program requires Windows NT!"),
-            szAppName, MB_ICONERROR);
-        return 0;
-    }
-    hwnd = CreateWindow(szAppName, TEXT("Digital Clock"),
-        WS_OVERLAPPEDWINDOW,
-        CW_USEDEFAULT, CW_USEDEFAULT,
-        CW_USEDEFAULT, CW_USEDEFAULT,
-        NULL, NULL, hInstance, NULL);
-    ShowWindow(hwnd, iCmdShow);
-    UpdateWindow(hwnd);
-    while (GetMessage(&msg, NULL, 0, 0))
-    {
-        TranslateMessage(&msg);
-        DispatchMessage(&msg);
-    }
-    return msg.wParam;
-}
+
 
 #define length_reduction 37
 #define height_reduction 12
@@ -310,14 +304,7 @@ void DisplayTwoDigits(HDC hdc, int iNumber, BOOL fSuppress)
     DisplayDigit(hdc, iNumber % 10);
     OffsetWindowOrgEx(hdc, -42, 0, NULL);
 }
-void DisplayColon(HDC hdc)
-{
-    POINT ptColon[2][4] = { 2, 21, 6, 17, 10, 21, 6, 25,
-    2, 51, 6, 47, 10, 51, 6, 55 };
-    Polygon(hdc, ptColon[0], 4);
-    Polygon(hdc, ptColon[1], 4);
-    OffsetWindowOrgEx(hdc, -12, 0, NULL);
-}
+
 void DisplayTime(HDC hdc, BOOL f24Hour, BOOL fSuppress)
 {
     SYSTEMTIME st;
@@ -328,11 +315,51 @@ void DisplayTime(HDC hdc, BOOL f24Hour, BOOL fSuppress)
         DisplayTwoDigits(hdc, st.wHour, fSuppress);
     else
         DisplayTwoDigits(hdc, (st.wHour %= 12) ? st.wHour : 12, fSuppress);
-    DisplayColon(hdc);
-    DisplayTwoDigits(hdc, st.wMinute, FALSE);
-    DisplayColon(hdc);
-    DisplayTwoDigits(hdc, st.wSecond, FALSE);
+
 }
+
+#if 0
+#include <windows.h>
+#define ID_TIMER 1
+LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
+int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
+    PSTR szCmdLine, int iCmdShow)
+{
+    static TCHAR szAppName[] = TEXT("DigClock");
+    HWND hwnd;
+    MSG msg;
+    WNDCLASS wndclass;
+    wndclass.style = CS_HREDRAW | CS_VREDRAW;
+    wndclass.lpfnWndProc = WndProc;
+    wndclass.cbClsExtra = 0;
+    wndclass.cbWndExtra = 0;
+    wndclass.hInstance = hInstance;
+    wndclass.hIcon = LoadIcon(NULL, IDI_APPLICATION);
+    wndclass.hCursor = LoadCursor(NULL, IDC_ARROW);
+    wndclass.hbrBackground = (HBRUSH)GetStockObject(WHITE_BRUSH);
+    wndclass.lpszMenuName = NULL;
+    wndclass.lpszClassName = szAppName;
+    if (!RegisterClass(&wndclass))
+    {
+        MessageBox(NULL, TEXT("Program requires Windows NT!"),
+            szAppName, MB_ICONERROR);
+        return 0;
+    }
+    hwnd = CreateWindow(szAppName, TEXT("Digital Clock"),
+        WS_OVERLAPPEDWINDOW,
+        CW_USEDEFAULT, CW_USEDEFAULT,
+        CW_USEDEFAULT, CW_USEDEFAULT,
+        NULL, NULL, hInstance, NULL);
+    ShowWindow(hwnd, iCmdShow);
+    UpdateWindow(hwnd);
+    while (GetMessage(&msg, NULL, 0, 0))
+    {
+        TranslateMessage(&msg);
+        DispatchMessage(&msg);
+    }
+    return msg.wParam;
+}
+
 LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
     static BOOL f24Hour, fSuppress;
@@ -381,3 +408,5 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
     }
     return DefWindowProc(hwnd, message, wParam, lParam);
 }
+
+#endif

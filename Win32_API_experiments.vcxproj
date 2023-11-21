@@ -156,6 +156,7 @@
     <Image Include="sst1_alive_led.bmp" />
     <Image Include="sst1_left_led.bmp" />
     <Image Include="sst1_right_led.bmp" />
+    <Image Include="sst4.bmp" />
     <Image Include="Win32_API_experiments.ico" />
   </ItemGroup>
   <ItemGroup>
